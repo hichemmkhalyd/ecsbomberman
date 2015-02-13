@@ -1,23 +1,12 @@
-/**
- * KickSystem
- *
- * UnB
- *
- * Handles the way the Kick powerup is treated during the game.
- * @author Paulo, William, Yuri.
- * @since 20/11/14
- * @version 2.0
- */
-
 package br.unb.unbomber.systems;
  
 import net.mostlyoriginal.api.event.common.EventManager;
 import net.mostlyoriginal.api.event.common.Subscribe;
 import br.unb.gridphysics.Vector2D;
 import br.unb.unbomber.component.BombDropper;
-import br.unb.unbomber.component.Direction;
 import br.unb.unbomber.component.Explosive;
 import br.unb.unbomber.component.Movable;
+import br.unb.unbomber.component.Direction;
 import br.unb.unbomber.component.PowerUp.PowerType;
 import br.unb.unbomber.component.PowerUpInventory;
 import br.unb.unbomber.component.Velocity;
@@ -30,9 +19,17 @@ import com.artemis.annotations.Wire;
 import com.artemis.managers.UuidEntityManager;
 import com.artemis.systems.VoidEntitySystem;
 
+/**
+ * Classe que contem as regras e ações que tratam e executam 
+ * a acção de chutar bombas
+ * 
+ * 
+ */
+
 @Wire
 public class KickSystem extends VoidEntitySystem {
     
+	Direction teste;
 	
 	ComponentMapper<BombDropper> cmBombDropper;
 	
@@ -61,15 +58,25 @@ public class KickSystem extends VoidEntitySystem {
 	protected void processSystem() { }
     
 	/**
-     * This method is for keeping track of the status of each bombDropper who
-     * tries to kick a bomb.
-     */
+	 * Método para verificar se quando ouver uma colisão, o resultado 
+	 * da mesma gerará o chute da bomba
+	 * 
+	 * @param collision
+	 *          
+	 */
 	@Subscribe
 	public void handle(CollisionEvent currentCollision) {
 		Entity source = uuidEm.getEntity(currentCollision.getSourceUuid());
 		Entity target = uuidEm.getEntity(currentCollision.getTargetUuid());
 
-		/* if an entity that can kick collided with a bomb */
+		/**
+		 * @if Comfere se o sorce da colisão tem condições de chutar bombas
+		 * 
+		 * Caso seja sim :descobre a faceDirection da sorce e chama o método que chuta a bomba
+		 * passando o objeto a ser chutado e a direção
+		 * 
+		 * Caso não: não faz nada
+		 */
 		if (checkIfCanKickBombs(source)
 				&& (cmExplosive.getSafe(target) != null)) {
 
@@ -82,7 +89,7 @@ public class KickSystem extends VoidEntitySystem {
 	}
     
     /**
-     * Checks if the dropper has the kick powerup
+     * Checa se a source tem o powerUp para chutar bombas
      * @param dropper
      * @return boolean
      */
@@ -91,7 +98,7 @@ public class KickSystem extends VoidEntitySystem {
 		/* instacia powerup  */
     	PowerUpInventory inventory = cmPowerUpInventory.getSafe(source);
 		
-		/* testa se o kick está ativo */
+		/* testa se o kick estÃ¡ ativo */
 		if (inventory!= null 
 				&& inventory.hasType(PowerType.KICKACQUIRED) ) {
 			return true;
@@ -101,13 +108,14 @@ public class KickSystem extends VoidEntitySystem {
     
     
     /**
-     * The facing direction of the kicker
+     * Método que verifica a faceDirection de quem está chutando a bomba
      * @param source
      * @return Direction
      */
     private Direction getDropperDirection (Entity source){
 		Movable movable = cmMovable.getSafe(source);
-        return movable.getFaceDirection();    //returns the direction component of the current dropper
+		this.teste = movable.getFaceDirection(); 
+        return this.teste;  //returns the direction component of the current dropper
     }
     
     
