@@ -28,14 +28,12 @@ public class MovementCalc {
 	 * @param displacements
 	 * @return final cell
 	 */
-	@SafeVarargs
-	public static GridDisplacement gridDisplacement(Vector2D<Float>... displacements){
+	public static GridDisplacement gridDisplacement(Vector2D<Float> origin,Vector2D<Float> displacement){
 		
 		Vector2D<Float> totalDisplacement = new Vector2D<>(0.0f, 0.0f);
 		
-		for(Vector2D<Float> displacement:displacements){
-			totalDisplacement = totalDisplacement.add(displacement);			
-		}
+	
+		totalDisplacement = origin.add(displacement);			
 		
 		/** Integer part */
 		Vector2D<Integer> cellIndexDisplacement = totalDisplacement.floor();
@@ -45,17 +43,20 @@ public class MovementCalc {
 		
 		Direction faceDirection;
 		
+		float teste  =Math.abs(displacement.getX());
+		float teste2 =Math.abs(displacement.getY());
+		
 		/** Face Direction */
-		if(totalDisplacement.getX() + totalDisplacement.getY() == 0){
+		if(displacement.getX() + displacement.getY() == 0){
 			faceDirection = null;
-		}else if(Math.abs(totalDisplacement.getX()) > Math.abs(totalDisplacement.getY()) ){
-			if(totalDisplacement.getX() > 0){
+		}else if(teste > teste2 ){
+			if(displacement.getX() > 0){
 				faceDirection = Direction.RIGHT;
 			}else{
 				faceDirection = Direction.LEFT;
 			}
 		}else{
-			if(totalDisplacement.getY() > 0){
+			if(displacement.getY() > 0){
 				faceDirection = Direction.UP;
 			}else{
 				faceDirection = Direction.DOWN;
